@@ -8,23 +8,27 @@ import lombok.experimental.UtilityClass;
 public class StudentMapper {
 
     public Student toDomain(StudentEntity entity) {
-        Student se=new Student(
-                entity.getStudentID(),
-                entity.getIin(),
-                entity.getUsername(),
-                entity.getEmail(),
-                entity.getGroupID());
+        Student se= Student
+                .builder()
+                .id(entity.getStudentID())
+                .iin(entity.getIin())
+                .username(entity.getUsername())
+                .email(entity.getEmail())
+                .groupID(entity.getGroupID())
+                .build();
 
         return se;
     }
 
     public StudentEntity toEntity(Student model) {
-        StudentEntity se=new StudentEntity(
-                model.getId(),
-                model.getIin(),
-                model.getUsername(),
-                model.getEmail(),
-                model.getGroupID());
+        StudentEntity se= StudentEntity
+                .builder()
+                .studentID(model.getId())
+                .username(model.getUsername())
+                .email(model.getEmail())
+                .groupID(model.getGroupID())
+                .iin(model.getIin())
+                .build();
 
         return se;
     }
