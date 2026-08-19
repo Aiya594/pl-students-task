@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 public class JournalEntity {
     private Long journalID;
     private String studyYear;
-    private int mark;
-    private LocalDateTime date;
 
     private Long groupID;
     private Long subjectID;

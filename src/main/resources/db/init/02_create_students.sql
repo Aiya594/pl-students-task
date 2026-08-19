@@ -1,0 +1,11 @@
+CREATE TABLE students (
+student_id BIGSERIAL PRIMARY KEY,
+iin VARCHAR(12) NOT NULL UNIQUE,
+email VARCHAR(255) NOT NULL UNIQUE,
+username VARCHAR(100) NOT NULL,
+group_id BIGINT NOT NULL,
+CONSTRAINT fk_student_group
+FOREIGN KEY (group_id)
+REFERENCES groups(group_id)
+ON DELETE RESTRICT
+);
