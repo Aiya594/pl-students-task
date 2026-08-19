@@ -1,6 +1,5 @@
 package com.example.demo.repository.persistence;
 
-import com.example.demo.config.DBConnection;
 import com.example.demo.entity.StudentEntity;
 import com.example.demo.model.Student;
 import com.example.demo.repository.domain.StudentRepository;
@@ -10,75 +9,88 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StudentJRepository implements StudentRepository {
-    private final DBConnection conn;
-
-    public StudentJRepository(DBConnection conn) {
-        this.conn = conn;
-    }
 
     @Override
-    public Student add(Student st) {
+    public Student add(Connection connection, Student st) throws Exception {
         String sql= """
-                INSERT INTO students iin, email,username,group_id
+                INSERT INTO students (iin, email,username,group_id)
                 VALUES(?,?,?,?)
-                RETURNING student_id
                 """;
         StudentEntity en= StudentMapper.toEntity(st);
 
-        try(Connection connection =conn.connect();
-            PreparedStatement statement=connection.prepareStatement(sql)) {
+        try(PreparedStatement ps=connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            statement.setString(1,en.getIin());
-            statement.setString(2,en.getEmail());
-            statement.setString(3, en.getUsername());
-            statement.setLong(4,en.getGroupID());
+            ps.setString(1,en.getIin());
+            ps.setString(2,en.getEmail());
+            ps.setString(3, en.getUsername());
+            ps.setLong(4,en.getGroupID());
 
-            statement.executeUpdate();
+            ps.executeUpdate();
 
-            try(ResultSet res = statement.getResultSet()){
+            try(ResultSet res = ps.getGeneratedKeys()){
                 if(res.next()){
-                    Long id = res.getLong("student_id");
-
-                    return new Student(
-                    id,
-                    st.getIin(),
-                    st.getUsername(),
-                    st.getEmail(),
-                    st.getGroupID());
+                    return Student.builder().id(res.getLong(1)).build();
                 }
-            } throw new SQLException("Student was not created");
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            }
         }
-
+        return st;
     }
 
     @Override
-    public List<Student> getStudents() {
-
-
-
-        return List.of();
+    public List<Student> getStudents(Connection connection) throws Exception {
+        String sql= "SELECT student_id,iin, email,username,group_id FROM students";
+        try (PreparedStatement ps=connection.prepareStatement(sql);
+            ResultSet res=ps.executeQuery()){
+            List<Student> list = new ArrayList<>();
+            while(res.next()){
+                StudentEntity entity = StudentEntity
+                        .builder()
+                        .studentID(res.getLong(1))
+                        .build();
+                Student student = StudentMapper.toDomain(entity);
+                list.add(student);
+            }
+            return list;
+        }
     }
 
     @Override
-    public Student getStudentbById(Long id) {
-        return null;
+    public Optional<Student> getStudentById(Connection connection, Long id) throws Exception {
+        String sql= """
+                SELECT student_id, iin, email, username, group_id
+                from students where student_id=?                
+                """;
+        try( PreparedStatement ps = connection.prepareStatement(sql)){
+            ps.setLong(1, id);
+            try(ResultSet rs=ps.executeQuery()){
+                if (rs.next()){
+                    StudentEntity student = StudentEntity
+                            .builder()
+                            .studentID(rs.getLong("student_id"))
+                            .build();
+                    return Optional.of(StudentMapper.toDomain(student));
+                }
+                return Optional.empty();
+            }
+        }
     }
 
     @Override
-    public Student getStudentbByUsername(Long id) {
-        return null;
-    }
-
-    @Override
-    public void delete(Long id) {
-
+    public boolean delete(Connection connection, Long id) {
+        String sql= "DELETE FROM students WHERE student_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, id);
+            ps.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
