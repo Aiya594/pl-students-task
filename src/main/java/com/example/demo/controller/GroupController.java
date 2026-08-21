@@ -20,6 +20,8 @@ public class GroupController {
     private final GroupService groupService;
     private final Connection connection;
 
+
+    //пока что так потом исправлю
     @Autowired
     public GroupController(GroupService groupService) throws SQLException {
         this.groupService = groupService;
@@ -30,6 +32,9 @@ public class GroupController {
     @PostMapping("/")
     public Group add(@RequestBody Group group) throws Exception {
         return groupService.addGroup(connection,group);
-
     }
+//
+//    public Group getGroupById(Long id) throws Exception {
+//
+//    }
 }

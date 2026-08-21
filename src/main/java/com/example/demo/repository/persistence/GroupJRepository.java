@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class GroupJRepository implements GroupRepository {
@@ -44,19 +46,47 @@ public class GroupJRepository implements GroupRepository {
         return null;
     }
 
+    @Override
+    public GroupStudents getGroupById(Connection connection, Long id) throws Exception {
+        String sql = """
+            SELECT g.group_id, s.student_id
+            FROM students s
+            LEFT JOIN groups g ON s.group_id = g.group_id
+            WHERE g.group_id = ?
+            """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setLong(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                List<Long> studentIds = new ArrayList<>();
+                Long groupId = null;
+
+                while (rs.next()) {
+                    groupId = rs.getLong("group_id");
+                    studentIds.add(rs.getLong("student_id"));
+                }
+
+                if (groupId == null) {
+                    return null;
+                }
+
+                GroupStudents result = GroupStudents.builder().groupId(groupId).studentIds(studentIds).build();
+
+                return result;
+            }
+        }
+    }
 //    @Override
 //    public boolean archive(Connection connection, Long groupId) throws Exception {
 //        return false;
 //    }
 
-    @Override
-    public GroupStudents getGroupById(Long id) throws Exception {
-        String sql = """
-                SELECT g.group_id, s.student_id from students s
-                JOIN groups g ON s.group_id=g.group_id
-                WHERE s.group_id=?                
-                """;
 
-        return null;
-    }
+
+
+
 }
+
