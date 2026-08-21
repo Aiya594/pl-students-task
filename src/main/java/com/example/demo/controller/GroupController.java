@@ -35,8 +35,8 @@ public class GroupController {
         return groupService.addGroup(connection,group);
     }
 
-    @GetMapping("/{id}")
-    public GroupStudents getGroupById(Long id) throws Exception {
-        return groupService.getGroupById(connection,id);
+    @GetMapping("/{id}/students")
+    public GroupStudents getGroupStudentsById(Long id) throws Exception {
+        return groupService.getGroupStudentsById(connection,id);
     }
 }

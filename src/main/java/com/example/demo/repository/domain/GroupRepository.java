@@ -7,6 +7,8 @@ import java.sql.Connection;
 
 public interface GroupRepository {
     Group add(Connection connection, Group g) throws Exception;
-//    boolean archive(Connection connection, Long groupId) throws Exception;
-    GroupStudents getGroupById(Connection connection, Long id) throws Exception;
+
+    Group getGroupByNameYear(Connection conn, String name, int year) throws Exception;
+
+    GroupStudents getGroupStdeuntsById(Connection connection, Long id) throws Exception;
 }

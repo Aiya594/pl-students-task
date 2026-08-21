@@ -65,7 +65,7 @@ public class StudentJRepository implements StudentRepository {
     public Optional<Student> getStudentById(Connection connection, Long id) throws Exception {
         String sql= """
                 SELECT student_id, iin, email, username, group_id
-                from students where student_id=?                
+                FROM students WHERE student_id=?                
                 """;
         try( PreparedStatement ps = connection.prepareStatement(sql)){
             ps.setLong(1, id);

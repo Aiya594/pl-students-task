@@ -10,12 +10,12 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class GroupJRepository implements GroupRepository {
-
     @Override
     public Group add(Connection connection, Group g) throws Exception {
         String sql = "INSERT INTO groups (name, year) VALUES (?,?)";
@@ -40,21 +40,38 @@ public class GroupJRepository implements GroupRepository {
                 }
             }
         }
-
+        return null;
+    }
+    @Override
+    public Group getGroupByNameYear(Connection conn, String name, int year) throws Exception {
+        String sql = "SELECT group_id, name, year FROM groups WHERE name=? AND year=?";
+        try( PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1,name);
+            ps.setInt(2,year);
+            try( ResultSet rs = ps.executeQuery()){
+                if (rs.next()){
+                    Group res = Group
+                            .builder()
+                            .groupId(rs.getLong("group_id"))
+                            .name(rs.getString("name"))
+                            .year(Year.of(rs.getInt("year")))
+                            .build();
+                    return res;
+                }
+            }
+        }
         return null;
     }
 
     @Override
-    public GroupStudents getGroupById(Connection connection, Long id) throws Exception {
+    public GroupStudents getGroupStdeuntsById(Connection connection, Long id) throws Exception {
         String sql = """
             SELECT g.group_id, s.student_id
             FROM students s
             LEFT JOIN groups g ON s.group_id = g.group_id
             WHERE g.group_id = ?
             """;
-
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-
             ps.setLong(1, id);
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -75,14 +92,5 @@ public class GroupJRepository implements GroupRepository {
             }
         }
     }
-//    @Override
-//    public boolean archive(Connection connection, Long groupId) throws Exception {
-//        return false;
-//    }
-
-
-
-
-
 }
 
