@@ -41,8 +41,6 @@ public class GroupJRepository implements GroupRepository {
             }
         }
 
-
-
         return null;
     }
 
@@ -73,9 +71,7 @@ public class GroupJRepository implements GroupRepository {
                     return null;
                 }
 
-                GroupStudents result = GroupStudents.builder().groupId(groupId).studentIds(studentIds).build();
-
-                return result;
+                return GroupStudents.builder().groupId(groupId).studentIds(studentIds).build();
             }
         }
     }

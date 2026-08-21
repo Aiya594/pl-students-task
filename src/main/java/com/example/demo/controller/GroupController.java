@@ -3,6 +3,7 @@ package com.example.demo.controller;
 
 import com.example.demo.config.DBConnection;
 import com.example.demo.model.Group;
+import com.example.demo.model.GroupStudents;
 import com.example.demo.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,8 +34,9 @@ public class GroupController {
     public Group add(@RequestBody Group group) throws Exception {
         return groupService.addGroup(connection,group);
     }
-//
-//    public Group getGroupById(Long id) throws Exception {
-//
-//    }
+
+    @GetMapping("/{id}")
+    public GroupStudents getGroupById(Long id) throws Exception {
+        return groupService.getGroupById(connection,id);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Group;
+import com.example.demo.model.GroupStudents;
 import com.example.demo.repository.domain.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,10 @@ public class GroupService {
         }
 
         return groupRepository.add(connection, g);
+    }
+
+    public GroupStudents getGroupById(Connection conn, Long id) throws Exception{
+        return groupRepository.getGroupById(conn, id);
     }
 
 }
