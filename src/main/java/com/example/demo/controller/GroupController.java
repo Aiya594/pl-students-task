@@ -19,24 +19,24 @@ import java.sql.SQLException;
 public class GroupController {
 
     private final GroupService groupService;
-    private final Connection connection;
+
 
 
     //пока что так потом исправлю
+    // коннекшн передавать с сервиса
     @Autowired
-    public GroupController(GroupService groupService) throws SQLException {
+    public GroupController(GroupService groupService) {
         this.groupService = groupService;
-        this.connection= DriverManager.getConnection("jdbc:postgresql://localhost:5433/nitro",
-                "postgres", "postgres");
+
     }
 
     @PostMapping("/")
     public Group add(@RequestBody Group group) throws Exception {
-        return groupService.addGroup(connection,group);
+        return groupService.addGroup(group);
     }
 
     @GetMapping("/{id}/students")
     public GroupStudents getGroupStudentsById(Long id) throws Exception {
-        return groupService.getGroupStudentsById(connection,id);
+        return groupService.getGroupStudentsById(id);
     }
 }

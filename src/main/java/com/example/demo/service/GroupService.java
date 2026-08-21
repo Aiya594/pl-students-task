@@ -8,31 +8,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 @Service
 public class GroupService {
+    private final Connection conn;
 
     private final GroupRepository groupRepository;
     private final GroupValidator validator;
 
     @Autowired
-    public GroupService(GroupRepository groupRepository, GroupValidator validator) {
+    public GroupService( GroupRepository groupRepository, GroupValidator validator) throws Exception {
+        this.conn= DriverManager.getConnection("jdbc:postgresql://localhost:5433/nitro",
+                "postgres", "postgres");
         this.groupRepository = groupRepository;
         this.validator = validator;
     }
 
-    public Group addGroup(Connection connection, Group g) throws Exception {
+    public Group addGroup( Group g) throws Exception {
         validator.validate(g);
 
-        Group group = groupRepository.getGroupByNameYear(connection,g.getName(),g.getYear().getValue());
+        Group group = groupRepository.getGroupByNameYear(conn,g.getName(),g.getYear().getValue());
         if(group.getName().equals(g.getName()) && group.getYear().equals(g.getYear())) {
             throw new IllegalArgumentException("Already exists");
         }
 
-        return groupRepository.add(connection, g);
+        return groupRepository.add(conn, g);
     }
 
-    public GroupStudents getGroupStudentsById(Connection conn, Long id) throws Exception{
+    public GroupStudents getGroupStudentsById( Long id) throws Exception{
         return groupRepository.getGroupStdeuntsById(conn, id);
     }
 
