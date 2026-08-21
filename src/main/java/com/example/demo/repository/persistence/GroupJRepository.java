@@ -3,6 +3,7 @@ package com.example.demo.repository.persistence;
 import com.example.demo.entity.GroupEntity;
 import com.example.demo.model.Group;
 import com.example.demo.model.GroupStudents;
+import com.example.demo.model.Student;
 import com.example.demo.repository.domain.GroupRepository;
 import com.example.demo.repository.mapper.GroupMapper;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,7 @@ import java.sql.ResultSet;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class GroupJRepository implements GroupRepository {
@@ -22,7 +24,6 @@ public class GroupJRepository implements GroupRepository {
 
         try(PreparedStatement ps = connection.prepareStatement(sql,
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
-
             GroupEntity e = GroupMapper.toEntity(g);
 
             ps.setString(1, e.getName());
@@ -42,25 +43,26 @@ public class GroupJRepository implements GroupRepository {
         }
         return null;
     }
+
     @Override
-    public Group getGroupByNameYear(Connection conn, String name, int year) throws Exception {
+    public Optional<Group> getGroupByNameYear(Connection conn, String name, int year) throws Exception {
         String sql = "SELECT group_id, name, year FROM groups WHERE name=? AND year=?";
         try( PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1,name);
             ps.setInt(2,year);
             try( ResultSet rs = ps.executeQuery()){
                 if (rs.next()){
-                    Group res = Group
+                    GroupEntity res = GroupEntity
                             .builder()
-                            .groupId(rs.getLong("group_id"))
+                            .groupID(rs.getLong("group_id"))
                             .name(rs.getString("name"))
-                            .year(Year.of(rs.getInt("year")))
+                            .year(rs.getInt("year"))
                             .build();
-                    return res;
+                    return Optional.of(GroupMapper.toDomain(res));
                 }
+                return Optional.empty();
             }
         }
-        return null;
     }
 
     @Override
@@ -87,7 +89,6 @@ public class GroupJRepository implements GroupRepository {
                 if (groupId == null) {
                     return null;
                 }
-
                 return GroupStudents.builder().groupId(groupId).studentIds(studentIds).build();
             }
         }

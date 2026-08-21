@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +82,30 @@ public class StudentJRepository implements StudentRepository {
             }
         }
     }
+
+    @Override
+    public Optional<Student> getStudentbByIIN(Connection conn, String iin) throws SQLException {
+        String sql = "SELECT student_id, iin, email, username, group_id FROM students WHERE iin LIKE '%?%'";
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1,iin);
+            try(ResultSet rs = ps.executeQuery()){
+                if (rs.next()){
+                    StudentEntity student = StudentEntity
+                            .builder()
+                            .studentID(rs.getLong("student_id"))
+                            .username(rs.getString("username"))
+                            .email(rs.getString("email"))
+                            .groupID(rs.getLong("group_id"))
+                            .iin(rs.getString("iin"))
+                            .build();
+                    return Optional.of(StudentMapper.toDomain(student));
+                }
+                return Optional.empty();
+            }
+        }
+    }
+
 
     @Override
     public boolean delete(Connection connection, Long id) {
