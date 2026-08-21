@@ -2,10 +2,11 @@ package com.example.demo.repository.mapper;
 
 import com.example.demo.entity.GroupEntity;
 import com.example.demo.model.Group;
+import lombok.experimental.UtilityClass;
 
 import java.time.Year;
 
-
+@UtilityClass
 public class GroupMapper {
     public Group toDomain(GroupEntity entity) {
         return Group
