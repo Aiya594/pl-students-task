@@ -34,7 +34,8 @@ public class StudentController {
         return studentService.getStudentById(id);
     }
 
-
-
-
+    @DeleteMapping("/{id}")
+    public boolean deleteStudent(@PathVariable Long id) throws Exception {
+        return studentService.deleteStudentById(id);
+    }
 }

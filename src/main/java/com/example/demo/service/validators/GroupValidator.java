@@ -9,10 +9,6 @@ import java.time.Year;
 public class GroupValidator {
 
     public void validate(Group g) throws Exception{
-        if (g == null) {
-            throw new IllegalArgumentException("Group must not be null");
-        }
-
         if (g.getName() == null || g.getName().isBlank()) {
             throw new IllegalArgumentException("Group name must not be empty");
         }

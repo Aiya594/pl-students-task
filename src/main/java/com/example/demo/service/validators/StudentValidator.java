@@ -11,9 +11,9 @@ public class StudentValidator {
             return;
         }
 
-        if(s.getGroupID()== null) {
-            throw new IllegalArgumentException("Group must not be empty");
-        }
+//        if(s.getGroupID()== null) {
+//            throw new IllegalArgumentException("Group must not be empty");
+//        }
 
         if(s.getEmail() == null || s.getEmail().isBlank()) {
             throw new IllegalArgumentException("Email must not be empty");

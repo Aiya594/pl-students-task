@@ -37,7 +37,13 @@ public class StudentJRepository implements StudentRepository {
 
             try(ResultSet res = ps.getGeneratedKeys()){
                 if(res.next()){
-                    return Student.builder().id(res.getLong(1)).build();
+                    return Student
+                            .builder()
+                            .id(res.getLong(1))
+                            .iin(res.getString("iin"))
+                            .email(res.getString("email"))
+                            .username(res.getString("username"))
+                            .build();
                 }
             }
         }
@@ -72,9 +78,12 @@ public class StudentJRepository implements StudentRepository {
             ps.setLong(1, id);
             try(ResultSet rs=ps.executeQuery()){
                 if (rs.next()){
-                    StudentEntity student = StudentEntity
-                            .builder()
+                    StudentEntity student = StudentEntity.builder()
                             .studentID(rs.getLong("student_id"))
+                            .iin(rs.getString("iin"))
+                            .email(rs.getString("email"))
+                            .username(rs.getString("username"))
+                            .groupID(rs.getLong("group_id"))
                             .build();
                     return Optional.of(StudentMapper.toDomain(student));
                 }
@@ -85,7 +94,7 @@ public class StudentJRepository implements StudentRepository {
 
     @Override
     public Optional<Student> getStudentbByIIN(Connection conn, String iin) throws SQLException {
-        String sql = "SELECT student_id, iin, email, username, group_id FROM students WHERE iin LIKE '%?%'";
+        String sql = "SELECT student_id, iin, email, username, group_id FROM students WHERE iin LIKE ?";
 
         try(PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1,iin);
@@ -112,8 +121,8 @@ public class StudentJRepository implements StudentRepository {
         String sql= "DELETE FROM students WHERE student_id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, id);
-            ps.executeUpdate();
-            return true;
+            int rows = ps.executeUpdate();
+            return rows > 0;
         } catch (Exception e) {
             return false;
         }

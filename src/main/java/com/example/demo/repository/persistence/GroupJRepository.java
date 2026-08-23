@@ -36,7 +36,7 @@ public class GroupJRepository implements GroupRepository {
 
                     return Group
                             .builder()
-                            .groupId(rs.getLong(1))
+                            .groupId(rs.getLong(1)).name(rs.getString("name")).year(Year.of(rs.getInt("year")))
                             .build();
                 }
             }

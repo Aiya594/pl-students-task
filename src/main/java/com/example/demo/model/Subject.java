@@ -1,5 +1,4 @@
-package com.example.demo.entity;
-
+package com.example.demo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class SubjectEntity {
+public class Subject {
     private Long subjectID;
     private String name;
 }

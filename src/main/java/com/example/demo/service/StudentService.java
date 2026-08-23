@@ -51,4 +51,8 @@ public class StudentService {
         return s.get();
     }
 
+    public boolean deleteStudentById(Long id) throws Exception {
+        return studentRepo.delete(conn,id);
+    }
+
 }
