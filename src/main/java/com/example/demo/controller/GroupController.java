@@ -30,13 +30,13 @@ public class GroupController {
 
     }
 
-    @PostMapping("/")
+    @PostMapping
     public Group add(@RequestBody Group group) throws Exception {
         return groupService.addGroup(group);
     }
 
     @GetMapping("/{id}/students")
-    public GroupStudents getGroupStudentsById(Long id) throws Exception {
+    public GroupStudents getGroupStudentsById(@PathVariable Long id) throws Exception {
         return groupService.getGroupStudentsById(id);
     }
 }

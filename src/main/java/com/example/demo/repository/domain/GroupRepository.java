@@ -12,5 +12,5 @@ public interface GroupRepository {
 
     Optional<Group> getGroupByNameYear(Connection conn, String name, int year) throws Exception;
 
-    GroupStudents getGroupStdeuntsById(Connection connection, Long id) throws Exception;
+    Optional<GroupStudents> getGroupStdeuntsById(Connection connection, Long id) throws Exception;
 }

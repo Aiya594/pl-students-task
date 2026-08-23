@@ -66,7 +66,7 @@ public class GroupJRepository implements GroupRepository {
     }
 
     @Override
-    public GroupStudents getGroupStdeuntsById(Connection connection, Long id) throws Exception {
+    public Optional<GroupStudents> getGroupStdeuntsById(Connection connection, Long id) throws Exception {
         String sql = """
             SELECT g.group_id, s.student_id
             FROM students s
@@ -89,7 +89,7 @@ public class GroupJRepository implements GroupRepository {
                 if (groupId == null) {
                     return null;
                 }
-                return GroupStudents.builder().groupId(groupId).studentIds(studentIds).build();
+                return Optional.of(GroupStudents.builder().groupId(groupId).studentIds(studentIds).build());
             }
         }
     }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Optional;
 
 @Service
 public class GroupService {
@@ -19,26 +20,30 @@ public class GroupService {
     private final GroupValidator validator;
 
     @Autowired
-    public GroupService( GroupRepository groupRepository, GroupValidator validator) throws Exception {
+    public GroupService( GroupRepository groupRepository) throws Exception {
         this.conn= DriverManager.getConnection("jdbc:postgresql://localhost:5433/nitro",
                 "postgres", "postgres");
         this.groupRepository = groupRepository;
-        this.validator = validator;
+        this.validator = new GroupValidator();
     }
 
     public Group addGroup( Group g) throws Exception {
         validator.validate(g);
 
-        Group group = groupRepository.getGroupByNameYear(conn,g.getName(),g.getYear().getValue());
-        if(group.getName().equals(g.getName()) && group.getYear().equals(g.getYear())) {
-            throw new IllegalArgumentException("Already exists");
+        Optional<Group> group = groupRepository.getGroupByNameYear(conn,g.getName(),g.getYear().getValue());
+        if (group.isPresent()) {
+            throw new IllegalArgumentException("already exists");
         }
 
         return groupRepository.add(conn, g);
     }
 
     public GroupStudents getGroupStudentsById( Long id) throws Exception{
-        return groupRepository.getGroupStdeuntsById(conn, id);
+        Optional<GroupStudents> gs = groupRepository.getGroupStdeuntsById(conn, id);
+        if (gs.isEmpty()) {
+            throw new IllegalArgumentException("group not found");
+        }
+        return gs.get();
     }
 
 }
