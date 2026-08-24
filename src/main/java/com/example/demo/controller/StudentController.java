@@ -4,6 +4,7 @@ package com.example.demo.controller;
 import com.example.demo.model.Student;
 import com.example.demo.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,22 +21,22 @@ public class StudentController {
     }
 
     @PostMapping
-    public Student addStudent(@RequestBody Student student) throws Exception {
-        return studentService.addStudent(student);
+    public ResponseEntity<Student> addStudent(@RequestBody Student student) throws Exception {
+        return ResponseEntity.ok(studentService.addStudent(student));
     }
 
     @GetMapping
-    public List<Student> getAllStudents() throws Exception {
-        return studentService.getStudents();
+    public ResponseEntity<List<Student>> getAllStudents() throws Exception {
+        return ResponseEntity.ok(studentService.getStudents());
     }
 
     @GetMapping("/{id}")
-    public Student getStudent(@PathVariable Long id) throws Exception {
-        return studentService.getStudentById(id);
+    public ResponseEntity<Student> getStudent(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(studentService.getStudentById(id));
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteStudent(@PathVariable Long id) throws Exception {
-        return studentService.deleteStudentById(id);
+    public ResponseEntity<Boolean> deleteStudent(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(studentService.deleteStudentById(id));
     }
 }

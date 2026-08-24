@@ -4,6 +4,8 @@ import com.example.demo.model.Group;
 import com.example.demo.model.GroupStudents;
 import com.example.demo.repository.domain.GroupRepository;
 import com.example.demo.service.validators.GroupValidator;
+import com.example.demo.util.exceptions.GroupAlreadyExists;
+import com.example.demo.util.exceptions.GroupNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,7 @@ public class GroupService {
 
         Optional<Group> group = groupRepository.getGroupByNameYear(conn,g.getName(),g.getYear().getValue());
         if (group.isPresent()) {
-            throw new IllegalArgumentException("already exists");
+            throw new GroupAlreadyExists(g.getName(),g.getYear().getValue());
         }
 
         return groupRepository.add(conn, g);
@@ -40,7 +42,7 @@ public class GroupService {
     public GroupStudents getGroupStudentsById( Long id) throws Exception{
         Optional<GroupStudents> gs = groupRepository.getGroupStdeuntsById(conn, id);
         if (gs.isEmpty()) {
-            throw new IllegalArgumentException("group not found");
+            throw new GroupNotFound(id);
         }
         return gs.get();
     }

@@ -4,6 +4,8 @@ import com.example.demo.model.Student;
 import com.example.demo.repository.domain.StudentRepository;
 import com.example.demo.repository.persistence.StudentJRepository;
 import com.example.demo.service.validators.StudentValidator;
+import com.example.demo.util.exceptions.StudentAlreadyExists;
+import com.example.demo.util.exceptions.StudentsNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,7 @@ public class StudentService {
 
         Optional<Student> st = studentRepo.getStudentbByIIN(conn, student.getIin());
         if (st.isPresent()) {
-            throw new Exception("Student already exists");
+            throw new StudentAlreadyExists(student.getIin());
         }
 
         return studentRepo.add(conn,student);
@@ -46,13 +48,15 @@ public class StudentService {
         Optional<Student> s = studentRepo.getStudentById(conn, id);
 
         if (s.isEmpty()) {
-            throw new Exception("Student not found");
+            throw new StudentsNotFound(id);
         }
         return s.get();
     }
 
     public boolean deleteStudentById(Long id) throws Exception {
-        return studentRepo.delete(conn,id);
+        if (!studentRepo.delete(conn,id)){
+            throw new StudentsNotFound(id);
+        }
+        return true;
     }
-
 }

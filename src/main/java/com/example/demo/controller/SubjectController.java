@@ -3,6 +3,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Subject;
 import com.example.demo.service.SubjectService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,17 +20,17 @@ public class SubjectController {
     }
 
     @GetMapping
-    public List<Subject> listSubjects() throws Exception {
-     return subjectService.listSubjects();
+    public ResponseEntity<List<Subject>> listSubjects() throws Exception {
+     return ResponseEntity.ok(subjectService.listSubjects());
     }
 
     @PostMapping
-    public Subject createSubject(@RequestBody Subject subject) throws Exception {
-        return subjectService.add(subject);
+    public ResponseEntity<Subject> createSubject(@RequestBody Subject subject) throws Exception {
+        return ResponseEntity.ok(subjectService.add(subject));
     }
 
     @GetMapping("/{id}")
-    public Subject getSubject(@PathVariable Long id) throws Exception {
-        return subjectService.findById(id);
+    public ResponseEntity<Subject> getSubject(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(subjectService.findById(id));
     }
 }

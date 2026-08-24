@@ -6,6 +6,7 @@ import com.example.demo.model.Group;
 import com.example.demo.model.GroupStudents;
 import com.example.demo.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +32,14 @@ public class GroupController {
     }
 
     @PostMapping
-    public Group add(@RequestBody Group group) throws Exception {
-        return groupService.addGroup(group);
+    public ResponseEntity<Group> add(@RequestBody Group group) throws Exception {
+        return ResponseEntity.ok(groupService.addGroup(group));
     }
 
     @GetMapping("/{id}/students")
-    public GroupStudents getGroupStudentsById(@PathVariable Long id) throws Exception {
-        return groupService.getGroupStudentsById(id);
+    public ResponseEntity<GroupStudents> getGroupStudentsById(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(
+                groupService.getGroupStudentsById(id)
+        );
     }
 }

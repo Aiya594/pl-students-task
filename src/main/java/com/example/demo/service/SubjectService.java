@@ -4,6 +4,8 @@ package com.example.demo.service;
 import com.example.demo.model.Subject;
 import com.example.demo.repository.domain.SubjectRepository;
 import com.example.demo.service.validators.SubjectValidator;
+import com.example.demo.util.exceptions.SubjectAlreadyExists;
+import com.example.demo.util.exceptions.SubjectNotFound;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -30,14 +32,18 @@ public class SubjectService {
 
         Optional<Subject> sb = subjectRepository.findByName(conn, subject.getName());
         if (sb.isPresent()) {
-            throw new Exception("Subject already exists");
+            throw new SubjectAlreadyExists(subject.getName());
         }
 
         return subjectRepository.add(conn, subject);
     }
 
     public Subject findById(Long id) throws Exception {
-        return subjectRepository.findById(conn , id).get();
+        Optional<Subject> sb = subjectRepository.findById(conn , id);
+        if(!sb.isPresent()){
+            throw new SubjectNotFound(id);
+        }
+        return sb.get();
     }
 
     public Optional<Subject> findByName(String name) throws Exception {
@@ -47,7 +53,5 @@ public class SubjectService {
     public List<Subject> listSubjects() throws Exception {
         return subjectRepository.listSubjects(conn);
     }
-
-
 
 }
