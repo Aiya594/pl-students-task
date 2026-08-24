@@ -1,15 +1,14 @@
-package com.example.demo.entity;
+package com.example.demo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @Builder
-public class JournalEntity {
-    private Long journalID;
+public class Journal {
+    private Long journalId;
     private String studyYear;
 
     private Long groupID;
