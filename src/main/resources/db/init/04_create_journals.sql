@@ -3,6 +3,7 @@ journal_id BIGSERIAL PRIMARY KEY,
 study_year VARCHAR(20) NOT NULL,
 group_id BIGINT NOT NULL,
 subject_id BIGINT NOT NULL,
+
 CONSTRAINT fk_journal_group
 FOREIGN KEY (group_id)
 REFERENCES groups(group_id)

@@ -2,7 +2,9 @@ package com.example.demo.repository.mapper;
 
 import com.example.demo.entity.JournalMarkEntity;
 import com.example.demo.model.JournalMark;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class JournalMarkMapper {
     public JournalMarkEntity toEntity(JournalMark jm){
         return JournalMarkEntity

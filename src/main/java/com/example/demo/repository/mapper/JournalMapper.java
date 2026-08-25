@@ -2,7 +2,9 @@ package com.example.demo.repository.mapper;
 
 import com.example.demo.entity.JournalEntity;
 import com.example.demo.model.Journal;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class JournalMapper {
 
     public Journal toDomain(JournalEntity j){
