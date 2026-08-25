@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
+
+
 @Data
 @AllArgsConstructor
 @Builder
@@ -12,7 +14,7 @@ public class JournalMark {
     private Long jmID;
 
     private int mark;
-    private LocalDateTime date;
+    private Date date;
 
     private Long journalID;
     private Long studentID;
