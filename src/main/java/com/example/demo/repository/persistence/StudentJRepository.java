@@ -60,6 +60,9 @@ public class StudentJRepository implements StudentRepository {
                 StudentEntity entity = StudentEntity
                         .builder()
                         .studentID(res.getLong(1))
+                        .iin(res.getString("iin"))
+                        .email(res.getString("email"))
+                        .username(res.getString("username"))
                         .build();
                 Student student = StudentMapper.toDomain(entity);
                 list.add(student);

@@ -8,6 +8,7 @@ import com.example.demo.repository.mapper.JournalMapper;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,12 +48,41 @@ public class JournalJRepository implements JournalRepository {
 
     @Override
     public Optional<Journal> getById(Connection conn, Long id) throws Exception {
-        return Optional.empty();
+        String sql = "SELECT journal_id, study_year,group_id,subject_id FROM journals WHERE journla_id=?";
+
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setLong(1,id);
+            try(ResultSet rs = ps.executeQuery()){
+                JournalEntity j = JournalEntity.builder().journalID(rs.getLong("journal_id"))
+                        .studyYear(rs.getString("study_year"))
+                        .groupID(rs.getLong("group_id"))
+                        .subjectID(rs.getLong("subject_id"))
+                        .studentID(rs.getLong("student_id"))
+                        .build();
+                return Optional.of(JournalMapper.toDomain(j));
+            }
+        }
     }
 
     @Override
     public List<Journal> list(Connection conn) throws Exception {
-        return List.of();
+        String sql = "SELECT journal_id, study_year, groups_id,subject_id";
+
+        try(PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs=ps.executeQuery()){
+            List<Journal> list = new ArrayList<>();
+            while (rs.next()){
+                JournalEntity je = JournalEntity
+                        .builder()
+                        .journalID(rs.getLong("journal_id"))
+                        .studyYear(rs.getString("study_year"))
+                        .groupID(rs.getLong("group_id"))
+                        .subjectID(rs.getLong("subject_id"))
+                        .studentID(rs.getLong("student_id")).build();
+                Journal j = JournalMapper.toDomain(je);
+                list.add(j);
+            }
+            return list;
+        }
     }
 
 //    @Override

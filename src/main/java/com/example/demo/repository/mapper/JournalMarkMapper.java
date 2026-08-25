@@ -17,7 +17,7 @@ public class JournalMarkMapper {
                 .build();
     }
 
-    public JournalMark toEntity(JournalMarkEntity jm){
+    public JournalMark toDomain(JournalMarkEntity jm){
         return JournalMark
                 .builder()
                 .jmID(jm.getJmID())
