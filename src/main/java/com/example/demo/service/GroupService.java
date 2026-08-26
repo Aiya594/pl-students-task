@@ -3,9 +3,11 @@ package com.example.demo.service;
 import com.example.demo.model.Group;
 import com.example.demo.model.GroupStudents;
 import com.example.demo.repository.domain.GroupRepository;
-import com.example.demo.service.validators.GroupValidator;
-import com.example.demo.util.exceptions.GroupAlreadyExists;
-import com.example.demo.util.exceptions.GroupNotFound;
+import com.example.demo.util.DBUtil;
+import com.example.demo.validator.GroupValidator;
+import com.example.demo.exception.GroupAlreadyExists;
+import com.example.demo.exception.GroupNotFound;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,37 +16,35 @@ import java.sql.DriverManager;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class GroupService {
-    private final Connection conn;
 
     private final GroupRepository groupRepository;
-    private final GroupValidator validator;
-
-    @Autowired
-    public GroupService( GroupRepository groupRepository) throws Exception {
-        this.conn= DriverManager.getConnection("jdbc:postgresql://localhost:5433/nitro",
-                "postgres", "postgres");
-        this.groupRepository = groupRepository;
-        this.validator = new GroupValidator();
-    }
 
     public Group addGroup( Group g) throws Exception {
-        validator.validate(g);
+        try (Connection conn = DBUtil.getConnection()) {
+            GroupValidator.validate(g);
 
-        Optional<Group> group = groupRepository.getGroupByNameYear(conn,g.getName(),g.getYear().getValue());
-        if (group.isPresent()) {
-            throw new GroupAlreadyExists(g.getName(),g.getYear().getValue());
+            Optional<Group> group = groupRepository.getGroupByNameYear(conn,g.getName(),g.getYear().getValue());
+            if (group.isPresent()) {
+                throw new GroupAlreadyExists(g.getName(),g.getYear().getValue());
+            }
+
+            return groupRepository.add(conn, g);
+        } catch (Exception e){
+            return null;
         }
-
-        return groupRepository.add(conn, g);
     }
 
     public GroupStudents getGroupStudentsById( Long id) throws Exception{
-        Optional<GroupStudents> gs = groupRepository.getGroupStdeuntsById(conn, id);
-        if (gs.isEmpty()) {
-            throw new GroupNotFound(id);
+        try (Connection conn = DBUtil.getConnection()) {
+            Optional<GroupStudents> gs = groupRepository.getGroupStdeuntsById(conn, id);
+            if (gs.isEmpty()) {
+                throw new GroupNotFound(id);
+            }
+            return gs.get();
+        }catch (Exception e){
+            return null;
         }
-        return gs.get();
     }
-
 }

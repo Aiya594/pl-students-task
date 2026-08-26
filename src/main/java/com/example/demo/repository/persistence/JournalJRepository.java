@@ -4,6 +4,8 @@ import com.example.demo.entity.JournalEntity;
 import com.example.demo.model.Journal;
 import com.example.demo.repository.domain.JournalRepository;
 import com.example.demo.repository.mapper.JournalMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class JournalJRepository implements JournalRepository {
     @Override
     public Journal add(Connection conn, Journal j) throws Exception {

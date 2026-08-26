@@ -5,6 +5,7 @@ import com.example.demo.model.JournalMark;
 import com.example.demo.model.Student;
 import com.example.demo.repository.domain.JournalMarkRepository;
 import com.example.demo.repository.mapper.JournalMarkMapper;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class JournalMarkJRepository implements JournalMarkRepository {
     @Override
     public JournalMark add(Connection conn, JournalMark jm) throws Exception {

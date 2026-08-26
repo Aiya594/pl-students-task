@@ -1,14 +1,16 @@
-package com.example.demo.util;
+package com.example.demo.handler;
 
 
-import com.example.demo.util.exceptions.*;
+import com.example.demo.exception.AlreadyExistsException;
+import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.ValidationException;
+import com.example.demo.payload.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.rmi.AlreadyBoundException;
-import java.util.AbstractList;
 
 @ControllerAdvice
 public class GlobalExceptionsHandler {

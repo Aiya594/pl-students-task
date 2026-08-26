@@ -1,12 +1,13 @@
-package com.example.demo.service.validators;
+package com.example.demo.validator;
 
 import com.example.demo.model.Group;
-import com.example.demo.util.exceptions.ValidationException;
+import com.example.demo.exception.ValidationException;
+import lombok.experimental.UtilityClass;
 import org.springframework.stereotype.Component;
 
 import java.time.Year;
 
-@Component
+@UtilityClass
 public class GroupValidator {
 
     public void validate(Group g) throws Exception{

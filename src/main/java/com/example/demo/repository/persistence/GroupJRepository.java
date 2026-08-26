@@ -93,5 +93,25 @@ public class GroupJRepository implements GroupRepository {
             }
         }
     }
+
+    @Override
+    public Optional<Group> getGroupByID(Connection conn, Long id) throws Exception {
+        String sql = "SELECT group_id, name, year FROM groups WHERE group_id=?";
+        try( PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setLong(1,id);
+            try( ResultSet rs = ps.executeQuery()){
+                if (rs.next()){
+                    GroupEntity res = GroupEntity
+                            .builder()
+                            .groupID(rs.getLong("group_id"))
+                            .name(rs.getString("name"))
+                            .year(rs.getInt("year"))
+                            .build();
+                    return Optional.of(GroupMapper.toDomain(res));
+                }
+                return Optional.empty();
+            }
+        }
+    }
 }
 

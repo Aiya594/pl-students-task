@@ -1,10 +1,11 @@
-package com.example.demo.service.validators;
+package com.example.demo.validator;
 
 import com.example.demo.model.Student;
-import com.example.demo.util.exceptions.ValidationException;
+import com.example.demo.exception.ValidationException;
+import lombok.experimental.UtilityClass;
 import org.springframework.stereotype.Component;
 
-@Component
+@UtilityClass
 public class StudentValidator {
 
     public void validate(Student s) throws Exception{

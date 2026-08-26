@@ -3,9 +3,11 @@ package com.example.demo.service;
 import com.example.demo.model.Student;
 import com.example.demo.repository.domain.StudentRepository;
 import com.example.demo.repository.persistence.StudentJRepository;
-import com.example.demo.service.validators.StudentValidator;
-import com.example.demo.util.exceptions.StudentAlreadyExists;
-import com.example.demo.util.exceptions.StudentsNotFound;
+import com.example.demo.util.DBUtil;
+import com.example.demo.validator.StudentValidator;
+import com.example.demo.exception.StudentAlreadyExists;
+import com.example.demo.exception.StudentsNotFound;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,48 +17,68 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class StudentService {
 
     private final StudentRepository studentRepo;
-    private final Connection conn;
-    private final StudentValidator validator;
 
-    @Autowired
-    public StudentService(StudentJRepository studentRepo) throws Exception {
-        this.studentRepo = studentRepo;
-        this.validator=new StudentValidator();
-        this.conn = DriverManager.getConnection("jdbc:postgresql://localhost:5433/nitro",
-                "postgres", "postgres");
-    }
 
     public Student addStudent(Student student) throws Exception {
-        validator.validate(student);
+        try (Connection conn = DBUtil.getConnection()) {
+            StudentValidator.validate(student);
 
-        Optional<Student> st = studentRepo.getStudentbByIIN(conn, student.getIin());
-        if (st.isPresent()) {
-            throw new StudentAlreadyExists(student.getIin());
+            Optional<Student> st = studentRepo.getStudentbByIIN(conn, student.getIin());
+            if (st.isPresent()) {
+                throw new StudentAlreadyExists(student.getIin());
+            }
+
+            return studentRepo.add(conn,student);
+
+        }catch (Exception e){
+            return null;
         }
 
-        return studentRepo.add(conn,student);
+
     }
 
     public List<Student> getStudents() throws Exception {
-        return studentRepo.getStudents(conn);
+        try (Connection conn = DBUtil.getConnection()) {
+
+            return studentRepo.getStudents(conn);
+
+        }catch (Exception e){
+            return null;
+        }
+
     }
 
     public Student getStudentById( Long id) throws Exception {
-        Optional<Student> s = studentRepo.getStudentById(conn, id);
+        try (Connection conn = DBUtil.getConnection()) {
+            Optional<Student> s = studentRepo.getStudentById(conn, id);
 
-        if (s.isEmpty()) {
-            throw new StudentsNotFound(id);
+            if (s.isEmpty()) {
+                throw new StudentsNotFound(id);
+            }
+            return s.get();
+
+        }catch (Exception e){
+            return null;
         }
-        return s.get();
+
     }
 
     public boolean deleteStudentById(Long id) throws Exception {
-        if (!studentRepo.delete(conn,id)){
-            throw new StudentsNotFound(id);
+        try (Connection conn = DBUtil.getConnection()) {
+
+            if (!studentRepo.delete(conn,id)){
+                throw new StudentsNotFound(id);
+            }
+            return true;
+        }catch (Exception e){
+            return false;
         }
-        return true;
+
+
+
     }
 }

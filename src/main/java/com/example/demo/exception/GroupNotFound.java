@@ -1,4 +1,4 @@
-package com.example.demo.util.exceptions;
+package com.example.demo.exception;
 
 public class GroupNotFound extends NotFoundException{
     public GroupNotFound(Long id) {
