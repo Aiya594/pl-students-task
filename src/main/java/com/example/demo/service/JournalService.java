@@ -52,7 +52,7 @@ public class JournalService {
 
     }
 
-    public Journal getById(Long id) throws Exception{
+    public Journal getById(Long id) {
         try (Connection conn = DBUtil.getConnection()) {
             Optional<Journal> j = journalRepo.getById(conn,id);
             if(j.isEmpty()){

@@ -3,6 +3,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Subject;
 import com.example.demo.service.SubjectService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,14 +11,11 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(value = "*")
-@RequestMapping("/api/v1/subjects")
+@RequestMapping("/api/v1/subject")
+@AllArgsConstructor
 public class SubjectController {
 
     private final SubjectService subjectService;
-
-    public SubjectController(SubjectService subjectService) {
-        this.subjectService = subjectService;
-    }
 
     @GetMapping
     public ResponseEntity<List<Subject>> listSubjects() throws Exception {

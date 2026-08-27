@@ -67,7 +67,6 @@ public class JournalMarkService {
             }
 
             return markRepo.getMarks(conn, journalId);
-
         }catch (Exception e) {
             throw new AppException("Error while getting journal marks: "+ e);
         }
@@ -88,6 +87,4 @@ public class JournalMarkService {
             throw new AppException("Error while deleting journal mark: "+ e);
         }
     }
-
-
 }
