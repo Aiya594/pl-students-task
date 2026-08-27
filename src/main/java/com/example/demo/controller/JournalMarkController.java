@@ -15,5 +15,4 @@ public class JournalMarkController {
 
     private final JournalService journalMarkService;
 
-
 }
