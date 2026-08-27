@@ -1,13 +1,13 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.AppException;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.JournalMark;
 import com.example.demo.repository.domain.JournalMarkRepository;
 import com.example.demo.repository.domain.JournalRepository;
 import com.example.demo.repository.domain.StudentRepository;
 import com.example.demo.util.DBUtil;
 import com.example.demo.validator.JournalMarkValidator;
-import com.example.demo.exception.JournalNotFound;
-import com.example.demo.exception.StudentsNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,17 +26,17 @@ public class JournalMarkService {
         try (Connection conn = DBUtil.getConnection()) {
             JournalMarkValidator.validate(jm);
             if(studentRepo.getStudentById(conn,jm.getStudentID()).isEmpty()){
-                throw new StudentsNotFound(jm.getStudentID());
+                throw new NotFoundException("Student  with id="+ jm.getStudentID()+" not found");
             }
 
             if(journalRepo.getById(conn,jm.getJournalID()).isEmpty()){
-                throw new JournalNotFound(jm.getJournalID());
+                throw new NotFoundException("Marks for journal with id="+ jm.getJournalID()+" not found");
             }
 
 
             return markRepo.add(conn,jm);
         }catch (Exception e){
-            return null;
+            throw new AppException("Error: " + e);
         }
 
     }
@@ -47,7 +47,7 @@ public class JournalMarkService {
 
             return markRepo.updateMark(conn,jmId,mark).get();
         }catch (Exception e){
-            return null;
+            throw new AppException("Error: " + e);
         }
 
     }
@@ -58,7 +58,7 @@ public class JournalMarkService {
 
             return markRepo.getMarks(conn,journalId);
         }catch (Exception e){
-            return null;
+            throw new AppException("Error: " + e);
         }
 
     }
@@ -69,7 +69,7 @@ public class JournalMarkService {
 
             return  markRepo.delete(conn,id);
         }catch (Exception e){
-            return false;
+            throw new AppException("Error: " + e);
         }
     }
 

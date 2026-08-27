@@ -35,32 +35,34 @@ public class JournalService {
             }
 
             if(studentRepo.getStudentById(con,j.getStudentID()).isEmpty()){
-                throw new StudentsNotFound(j.getStudentID());
+                throw new NotFoundException("Student  with id="+ j.getStudentID()+" not found");
             }
 
             if(subjectRepo.findById(con, j.getSubjectID()).isEmpty()){
-                throw new SubjectNotFound(j.getSubjectID());
+                throw new NotFoundException("Subject  with id="+ j.getSubjectID()+" not found");
             }
 
             if(groupRepo.getGroupByID(con, j.getGroupID()).isEmpty()){
-                throw new GroupNotFound(j.getGroupID());
+                throw new NotFoundException("Group  with id="+ j.getGroupID()+" not found");
             }
             return journalRepo.add(con, j);
-        } catch (Exception e) {
-            return null;
+        } catch (Exception e){
+            throw new AppException("Error: " + e);
         }
+
     }
 
     public Journal getById(Long id) throws Exception{
         try (Connection conn = DBUtil.getConnection()) {
             Optional<Journal> j = journalRepo.getById(conn,id);
             if(j.isEmpty()){
-                throw new JournalNotFound(id);
+                throw new NotFoundException("Journal  with id="+id+" not found");
             }
             return j.get();
         }catch (Exception e){
-            return null;
+            throw new AppException("Error: " + e);
         }
+
 
 
     }
@@ -69,7 +71,8 @@ public class JournalService {
         try (Connection conn = DBUtil.getConnection()) {
             return journalRepo.list(conn);
         } catch (Exception e){
-            return null;
+            throw new AppException("Error: " + e);
         }
+
     }
 }

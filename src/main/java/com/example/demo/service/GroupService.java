@@ -1,18 +1,17 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.AlreadyExistsException;
+import com.example.demo.exception.AppException;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Group;
 import com.example.demo.model.GroupStudents;
 import com.example.demo.repository.domain.GroupRepository;
 import com.example.demo.util.DBUtil;
 import com.example.demo.validator.GroupValidator;
-import com.example.demo.exception.GroupAlreadyExists;
-import com.example.demo.exception.GroupNotFound;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.Optional;
 
 @Service
@@ -27,24 +26,24 @@ public class GroupService {
 
             Optional<Group> group = groupRepository.getGroupByNameYear(conn,g.getName(),g.getYear().getValue());
             if (group.isPresent()) {
-                throw new GroupAlreadyExists(g.getName(),g.getYear().getValue());
+                throw new AlreadyExistsException("Group with name "+ g.getName() + " and year "+ g.getYear().getValue()+ " already exists");
             }
 
             return groupRepository.add(conn, g);
         } catch (Exception e){
-            return null;
+            throw new AppException("Error: " + e);
         }
     }
 
-    public GroupStudents getGroupStudentsById( Long id) throws Exception{
+    public GroupStudents getGroupStudentsById( Long id) {
         try (Connection conn = DBUtil.getConnection()) {
             Optional<GroupStudents> gs = groupRepository.getGroupStdeuntsById(conn, id);
             if (gs.isEmpty()) {
-                throw new GroupNotFound(id);
+                throw new NotFoundException("Group with id="+id+" not found");
             }
             return gs.get();
         }catch (Exception e){
-            return null;
+            throw new AppException("Error: " + e);
         }
     }
 }

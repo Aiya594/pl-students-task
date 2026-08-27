@@ -2,6 +2,7 @@ package com.example.demo.handler;
 
 
 import com.example.demo.exception.AlreadyExistsException;
+import com.example.demo.exception.AppException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.exception.ValidationException;
 import com.example.demo.payload.ErrorResponse;
@@ -44,6 +45,16 @@ public class GlobalExceptionsHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(er);
+    }
+
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ErrorResponse> handleAppException(AppException exc){
+        ErrorResponse er = ErrorResponse
+                .builder().status(500).message(exc.getMessage()).build();
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(er);
     }
 
