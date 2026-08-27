@@ -63,8 +63,6 @@ public class JournalService {
             throw new AppException("Error: " + e);
         }
 
-
-
     }
 
     public List<Journal> list() {
