@@ -13,5 +13,23 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./src/main/resources/db/init:/docker-entrypoint-initdb.d
 
+  app:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    container_name: spring_app
+    restart: unless-stopped
+    depends_on:
+        - postgres
+    ports:
+        - "8090:8090"
+    environment:
+        DB_HOST: postgres
+        DB_PORT: 5432
+        DB_NAME: nitro
+        DB_USER: postgres
+        DB_PASSWORD: postgres
+
+
 volumes:
   postgres_data:
