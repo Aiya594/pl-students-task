@@ -14,7 +14,6 @@ public class JournalMapper {
                 .studyYear(j.getStudyYear())
                 .groupID(j.getGroupID())
                 .subjectID(j.getSubjectID())
-                .studentID(j.getStudentID())
                 .build();
     }
 
@@ -25,7 +24,6 @@ public class JournalMapper {
                 .studyYear(j.getStudyYear())
                 .groupID(j.getGroupID())
                 .subjectID(j.getSubjectID())
-                .studentID(j.getStudentID())
                 .build();
     }
 }

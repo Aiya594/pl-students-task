@@ -3,7 +3,10 @@ package com.example.demo.service;
 import com.example.demo.exception.AlreadyExistsException;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.ValidationException;
+import com.example.demo.model.Group;
 import com.example.demo.model.Student;
+import com.example.demo.repository.domain.GroupRepository;
 import com.example.demo.repository.domain.StudentRepository;
 import com.example.demo.util.DBUtil;
 import com.example.demo.validator.StudentValidator;
@@ -19,6 +22,7 @@ import java.util.Optional;
 public class StudentService {
 
     private final StudentRepository studentRepo;
+    private final GroupRepository groupRepo;
 
 
     public Student addStudent(Student student)  {
@@ -30,8 +34,15 @@ public class StudentService {
                 throw new AlreadyExistsException( "Student with iin "+ student.getIin() +" already exists");
             }
 
+            Optional<Group> g = groupRepo.getGroupByID(conn, student.getGroupID());
+            if(g.isEmpty()){
+                throw new NotFoundException( "Group with ID "+ student.getGroupID() +" does not exist");
+            }
+
             return studentRepo.add(conn,student);
 
+        }catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
         }catch (Exception e){
             throw new AppException("Error: " + e);
         }
@@ -44,7 +55,9 @@ public class StudentService {
 
             return studentRepo.getStudents(conn);
 
-        }catch (Exception e){
+        } catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
+        } catch (Exception e){
             throw new AppException("Error: " + e);
         }
 
@@ -59,7 +72,9 @@ public class StudentService {
             }
             return s.get();
 
-        }catch (Exception e){
+        } catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
+        } catch (Exception e){
             throw new AppException("Error: " + e);
         }
 
@@ -72,7 +87,9 @@ public class StudentService {
                 throw new NotFoundException("Student  with id="+ id +" not found");
             }
             return true;
-        }catch (Exception e){
+        } catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
+        } catch (Exception e){
             throw new AppException("Error: " + e);
         }
     }

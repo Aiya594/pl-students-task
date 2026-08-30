@@ -9,12 +9,12 @@ public class JournalValidator {
 
     public void validate(Journal j) throws Exception{
         if(j.getGroupID()==null || j.getGroupID().toString().isBlank()){
-            throw  new ValidationException("journal id must nor be empty");
+            throw  new ValidationException("group id must nor be empty");
         }
 
-        if(j.getStudentID()==null || j.getStudentID().toString().isBlank()){
-            throw  new ValidationException("student id must nor be empty");
-        }
+//        if(j.getStudentID()==null || j.getStudentID().toString().isBlank()){
+//            throw  new ValidationException("student id must nor be empty");
+//        }
 
         if(j.getStudyYear().isBlank()){
             throw new ValidationException("study year must not be empty");

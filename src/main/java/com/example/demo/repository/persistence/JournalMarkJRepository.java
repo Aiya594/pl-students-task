@@ -20,7 +20,7 @@ public class JournalMarkJRepository implements JournalMarkRepository {
     public JournalMark add(Connection conn, JournalMark jm) throws Exception {
         String sql =  """
                 INSERT INTO journal_marks (journal_id, student_id, mark)
-                VALUES (?,?,?,?)
+                VALUES (?,?,?)
                 """;
         try(PreparedStatement ps= conn.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS)){
             JournalMarkEntity j = JournalMarkMapper.toEntity(jm);
@@ -83,28 +83,36 @@ public class JournalMarkJRepository implements JournalMarkRepository {
 
     @Override
     public List<JournalMark> getMarks(Connection conn, Long journalId) throws Exception {
-        String sql = "SELECT journal_entry_id, journal_id, student_id, mark, date WHERE journal_id=?";
 
-        try(PreparedStatement ps=conn.prepareStatement(sql);
-            ResultSet res=ps.executeQuery()){
-            ps.setLong(1,journalId);
-            List<JournalMark> list = new ArrayList<>();
-            ps.executeUpdate();
+        String sql = """
+            SELECT journal_entry_id, journal_id, student_id, mark, date
+            FROM journal_marks
+            WHERE journal_id = ?
+            """;
 
-            while(res.next()){
-                JournalMarkEntity je=JournalMarkEntity
-                                .builder()
-                                .jmID(res.getLong("journal_entry_id"))
-                                .mark(res.getInt("mark"))
-                                .date(res.getDate("date"))
-                                .journalID(res.getLong("journal_id"))
-                                .studentID(res.getLong("student_id"))
-                                .build();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
-                list.add(JournalMarkMapper.toDomain(je));
+            ps.setLong(1, journalId);
 
+            try (ResultSet res = ps.executeQuery()) {
+
+                List<JournalMark> list = new ArrayList<>();
+
+                while (res.next()) {
+
+                    JournalMarkEntity je = JournalMarkEntity.builder()
+                            .jmID(res.getLong("journal_entry_id"))
+                            .mark(res.getInt("mark"))
+                            .date(res.getDate("date"))
+                            .journalID(res.getLong("journal_id"))
+                            .studentID(res.getLong("student_id"))
+                            .build();
+
+                    list.add(JournalMarkMapper.toDomain(je));
+                }
+
+                return list;
             }
-            return list;
         }
     }
 

@@ -28,7 +28,7 @@ public class GlobalExceptionsHandler {
                 .body(error);
     }
 
-    @ExceptionHandler(AlreadyBoundException.class)
+    @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleAlreadyExists(AlreadyExistsException exc){
         ErrorResponse er = ErrorResponse
                 .builder().status(409).message(exc.getMessage()).build();

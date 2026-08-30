@@ -4,6 +4,7 @@ package com.example.demo.service;
 import com.example.demo.exception.AlreadyExistsException;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.ValidationException;
 import com.example.demo.model.Subject;
 import com.example.demo.repository.domain.SubjectRepository;
 import com.example.demo.util.DBUtil;
@@ -32,7 +33,9 @@ public class SubjectService {
 
             return subjectRepository.add(conn, subject);
 
-        }catch (Exception e){
+        } catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
+        } catch (Exception e){
             throw new AppException("Error: " + e);
         }
     }
@@ -45,7 +48,9 @@ public class SubjectService {
             }
             return sb.get();
 
-        }catch (Exception e){
+        } catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
+        } catch (Exception e){
             throw new AppException("Error: " + e);
         }
     }
@@ -54,7 +59,9 @@ public class SubjectService {
         try (Connection conn = DBUtil.getConnection()) {
             return subjectRepository.findByName(conn , name);
 
-        }catch (Exception e){
+        } catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
+        } catch (Exception e){
             throw new AppException("Error: " + e);
         }
     }
@@ -62,6 +69,8 @@ public class SubjectService {
     public List<Subject> listSubjects() {
         try (Connection conn = DBUtil.getConnection()) {
             return subjectRepository.listSubjects(conn);
+        } catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
         } catch (Exception e){
             throw new AppException("Error: " + e);
         }

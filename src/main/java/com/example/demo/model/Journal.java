@@ -13,5 +13,4 @@ public class Journal {
 
     private Long groupID;
     private Long subjectID;
-    private Long studentID;
 }

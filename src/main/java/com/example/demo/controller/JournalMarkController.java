@@ -30,7 +30,7 @@ public class JournalMarkController {
         return journalMarkService.updateMark(id, mark);
     }
 
-    @GetMapping("/journal/{journalId}")
+    @GetMapping("/{journalId}/marks")
     public List<JournalMark> getMarks(
             @PathVariable Long journalId
     ) {

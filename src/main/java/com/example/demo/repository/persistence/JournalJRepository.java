@@ -39,7 +39,6 @@ public class JournalJRepository implements JournalRepository {
                               .studyYear(rs.getString("study_year"))
                               .groupID(rs.getLong("group_id"))
                               .subjectID(rs.getLong("subject_id"))
-                              .studentID(rs.getLong("student_id"))
                               .build()
                     );
                 }
@@ -51,25 +50,39 @@ public class JournalJRepository implements JournalRepository {
 
     @Override
     public Optional<Journal> getById(Connection conn, Long id) throws Exception {
-        String sql = "SELECT journal_id, study_year,group_id,subject_id FROM journals WHERE journla_id=?";
 
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setLong(1,id);
-            try(ResultSet rs = ps.executeQuery()){
-                JournalEntity j = JournalEntity.builder().journalID(rs.getLong("journal_id"))
-                        .studyYear(rs.getString("study_year"))
-                        .groupID(rs.getLong("group_id"))
-                        .subjectID(rs.getLong("subject_id"))
-                        .studentID(rs.getLong("student_id"))
-                        .build();
-                return Optional.of(JournalMapper.toDomain(j));
+        String sql = """
+            SELECT journal_id, study_year, group_id, subject_id
+            FROM journals
+            WHERE journal_id = ?
+            """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setLong(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                if (rs.next()) {
+
+                    JournalEntity j = JournalEntity.builder()
+                            .journalID(rs.getLong("journal_id"))
+                            .studyYear(rs.getString("study_year"))
+                            .groupID(rs.getLong("group_id"))
+                            .subjectID(rs.getLong("subject_id"))
+                            .build();
+
+                    return Optional.of(JournalMapper.toDomain(j));
+                }
+
+                return Optional.empty();
             }
         }
     }
 
     @Override
     public List<Journal> list(Connection conn) throws Exception {
-        String sql = "SELECT journal_id, study_year, groups_id,subject_id";
+        String sql = "SELECT  journal_id, study_year, group_id,subject_id FROM journals";
 
         try(PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs=ps.executeQuery()){
             List<Journal> list = new ArrayList<>();
@@ -79,8 +92,7 @@ public class JournalJRepository implements JournalRepository {
                         .journalID(rs.getLong("journal_id"))
                         .studyYear(rs.getString("study_year"))
                         .groupID(rs.getLong("group_id"))
-                        .subjectID(rs.getLong("subject_id"))
-                        .studentID(rs.getLong("student_id")).build();
+                        .subjectID(rs.getLong("subject_id")).build();
                 Journal j = JournalMapper.toDomain(je);
                 list.add(j);
             }

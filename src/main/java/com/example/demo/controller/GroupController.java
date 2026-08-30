@@ -1,19 +1,12 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.config.DBConnection;
 import com.example.demo.model.Group;
 import com.example.demo.model.GroupStudents;
 import com.example.demo.service.GroupService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 @RestController
 @CrossOrigin(value = "*")

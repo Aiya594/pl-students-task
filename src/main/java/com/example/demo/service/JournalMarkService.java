@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.AlreadyExistsException;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.ValidationException;
 import com.example.demo.model.JournalMark;
 import com.example.demo.repository.domain.JournalMarkRepository;
 import com.example.demo.repository.domain.JournalRepository;
@@ -38,7 +40,9 @@ public class JournalMarkService {
 
             return markRepo.add(conn, jm);
 
-        } catch (Exception e) {
+        }catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
+        }catch (Exception e) {
             throw new AppException("Error while adding journal mark: "+ e);
         }
     }
@@ -54,6 +58,8 @@ public class JournalMarkService {
 
             return result.get();
 
+        }catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
         } catch (Exception e) {
             throw new AppException("Error while updating journal mark: "+ e);
         }
@@ -67,7 +73,9 @@ public class JournalMarkService {
             }
 
             return markRepo.getMarks(conn, journalId);
-        }catch (Exception e) {
+        } catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
+        } catch (Exception e) {
             throw new AppException("Error while getting journal marks: "+ e);
         }
     }
@@ -83,7 +91,7 @@ public class JournalMarkService {
 
             return true;
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new AppException("Error while deleting journal mark: "+ e);
         }
     }

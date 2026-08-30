@@ -43,6 +43,7 @@ public class StudentJRepository implements StudentRepository {
                             .iin(res.getString("iin"))
                             .email(res.getString("email"))
                             .username(res.getString("username"))
+                            .groupID(res.getLong("group_id"))
                             .build();
                 }
             }
@@ -63,6 +64,7 @@ public class StudentJRepository implements StudentRepository {
                         .iin(res.getString("iin"))
                         .email(res.getString("email"))
                         .username(res.getString("username"))
+                        .groupID(res.getLong("group_id"))
                         .build();
                 Student student = StudentMapper.toDomain(entity);
                 list.add(student);

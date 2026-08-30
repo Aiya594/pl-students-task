@@ -34,9 +34,9 @@ public class JournalService {
                 throw new ValidationException("Study year cannot be in the future");
             }
 
-            if(studentRepo.getStudentById(con,j.getStudentID()).isEmpty()){
-                throw new NotFoundException("Student  with id="+ j.getStudentID()+" not found");
-            }
+//            if(studentRepo.getStudentById(con,j.getStudentID()).isEmpty()){
+//                throw new NotFoundException("Student  with id="+ j.getStudentID()+" not found");
+//            }
 
             if(subjectRepo.findById(con, j.getSubjectID()).isEmpty()){
                 throw new NotFoundException("Subject  with id="+ j.getSubjectID()+" not found");
@@ -46,6 +46,8 @@ public class JournalService {
                 throw new NotFoundException("Group  with id="+ j.getGroupID()+" not found");
             }
             return journalRepo.add(con, j);
+        } catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
         } catch (Exception e){
             throw new AppException("Error: " + e);
         }
@@ -59,6 +61,8 @@ public class JournalService {
                 throw new NotFoundException("Journal  with id="+id+" not found");
             }
             return j.get();
+        }catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
         }catch (Exception e){
             throw new AppException("Error: " + e);
         }
@@ -68,6 +72,8 @@ public class JournalService {
     public List<Journal> list() {
         try (Connection conn = DBUtil.getConnection()) {
             return journalRepo.list(conn);
+        }catch (ValidationException | NotFoundException | AlreadyExistsException e) {
+            throw e;
         } catch (Exception e){
             throw new AppException("Error: " + e);
         }
